@@ -68,6 +68,15 @@ router.post('/login', function(req, res) {
     });
 });
 
+/////////////////////////////////////////VIEW/////////////////////////////////////////
+router.get('/:id', function(req, res) {
+    User.findById(req.params.id, function(err, user) {
+        if (err) return res.status(500).send("Error al encontrar usuario.");
+        if (!user) return res.status(404).send("No existe el usuario.");
+        res.status(200).send(user);
+    });
+});
+
 /////////////////////////////////////////EDIT/////////////////////////////////////////
 router.put('/:id', /* VerifyToken, */ function(req, res) {
     User.findByIdAndUpdate(req.params.id, req.body, { new: true }, function(err, user) {

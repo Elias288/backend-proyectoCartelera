@@ -9,11 +9,11 @@ var db = require('./database')
 app.use(cors())
 app.use(express.json())
 
-app.get('/api', function(req, res){
-    res.status(200).send('API works.');
+app.get('/', function(req, res){
+    res.status(200).send('<h1>Welcome to Backend-proyectoCartelera!!</h1>')
 })
 
 var UserController = require(__root + 'user/UserController');
-app.use('/api/users', UserController);
+app.use('/users', UserController);
 
 module.exports = app;
