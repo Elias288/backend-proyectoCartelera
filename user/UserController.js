@@ -67,7 +67,7 @@ router.post('/login', function(req, res) {
         var token = jwt.sign({ id: user._id }, config.secret, {
             expiresIn: 7200 // expira en 2 horas
         });
-        res.status(200).send({ auth: true, token: token });
+        res.status(200).send({ auth: true, token: token, user, user});
         
     });
 });
