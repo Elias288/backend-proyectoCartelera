@@ -97,4 +97,15 @@ router.delete('/:id', function(req, res) {
     });
 });
 
+/////////////////////////////////////////NEW/////////////////////////////////////////
+router.post('/modify', function(req, res) {
+    User.findOneAndUpdate({email: req.body.email}, {name:req.body.name, email:req.body.newemail}, { returnOriginal:false },
+        function(err) {
+            if (err) return res.status(500).send("Error al modificar el usuario.");
+            else return res.status(200).send("Modificado con exito.");
+        });
+});
+
+/////////////////////////////////////////ME/////////////////////////////////////////
+
 module.exports = router;

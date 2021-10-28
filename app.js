@@ -6,7 +6,7 @@ global.__root = __dirname + '/';
 var db = require('./database')
 //const User = require('./model/Users/User')
 
-app.use(cors())
+app.use(cors({ credentials: true }))
 app.use(express.json())
 
 app.get('/', function(req, res){
