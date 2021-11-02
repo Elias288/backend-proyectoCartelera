@@ -16,4 +16,7 @@ app.get('/', function(req, res){
 var UserController = require(__root + 'user/UserController');
 app.use('/users', UserController);
 
+var BilboardController = require(__root + 'user/BilboardController');
+app.use('/bilboard', BilboardController);
+
 module.exports = app;
