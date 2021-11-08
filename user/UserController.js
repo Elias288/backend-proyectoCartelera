@@ -62,7 +62,8 @@ router.post('/login', function(req, res) {
         if(!req.body.password) return res.status(404).send('No se ingreso una contraseña');
 
         var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-        if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+        if (!passwordIsValid) return res.status(401).send('Contraseña incorrecta');
+        /* if (!passwordIsValid) return res.status(401).send({ auth: false, token: null }); */
     
         var token = jwt.sign({ id: user._id }, config.secret, {
             expiresIn: 7200 // expira en 2 horas
@@ -103,10 +104,15 @@ router.post('/modify', function(req, res) {
     if (!token) return res.status(401).send({ auth: false, message: 'Sin token' });
     jwt.verify(token, config.secret, function(err, decoded) {
         if (err) return res.status(500).send({ auth: false, message: 'Error de autenticacion' });
-        User.findOneAndUpdate({email: req.body.email}, {name:req.body.name, email:req.body.newemail}, { returnOriginal:false },
-            function(err) {
+
+        const filter={_id:decoded.id}
+        const update={name:req.body.name, email:req.body.email}
+
+        User.findOneAndUpdate(filter, update, { returnOriginal:false },
+            function(err, user) {
                 if (err) return res.status(500).send("Error al modificar el usuario.");
-                else return res.status(200).send("Modificado con exito.");
+                /* else return res.status(200).send("Modificado con exito."); */
+                else return res.status(200).send({ auth: true, token: token, user, user});
         });
     });
     
