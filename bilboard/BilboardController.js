@@ -24,8 +24,10 @@ router.get('/list', function(req, res) {
 router.post('/new', function(req, res) {
     Bilboard.create({
             projectName: req.body.projectName,
-            adminEmail: req.body.adminEmail,
-            description: req.body.description
+            authId: req.body.adminId,
+            authEmail: req.body.adminEmail,
+            description: req.body.description,
+            members: [req.body.adminId]
         },
         function(err) {
             if (err) return res.status(500).send("Error al crear la cartelera.");
@@ -45,7 +47,7 @@ router.get('/:id', function(req, res) {
 
 /////////////////////////////////////////MODIFY/////////////////////////////////////////
 router.post('/modify', function(req, res) {
-    Bilboard.findOneAndUpdate({_id: req.body.idBilboard}, {projectName:req.body.projectName, adminEmail:req.body.adminEmail, description:req.body.description}, { returnOriginal:false },
+    Bilboard.findOneAndUpdate({_id: req.body.idBilboard}, {projectName:req.body.projectName, adminId:req.body.adminId, description:req.body.description}, { returnOriginal:false },
         function(err) {
             if (err) return res.status(500).send("Error al modificar la cartelera.");
             else return res.status(200).send("Cartelera modificada con exito.");

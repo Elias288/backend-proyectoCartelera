@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 
 const BilboardSchema = mongoose.Schema({
     projectName: String,
-    adminEmail: String,
+    authId: {//id del autor
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+    authEmail: String, 
     description: String,
     members: [
         {
