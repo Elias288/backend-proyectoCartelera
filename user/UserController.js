@@ -118,6 +118,17 @@ router.post('/modify', function(req, res) {
     
 });
 
-/////////////////////////////////////////ME/////////////////////////////////////////
+/////////////////////////////////////////ADDBILBOARD/////////////////////////////////////////
+router.post('/addbilboard', function(req, res){
+    user.findByIdAndUpdate(
+        req.body.idUser,
+        {$push: {bilboards: req.body.idBilboard}},
+        {new: true, useFindAndModify: false},
+        function(err){
+            if(err) return res.status(500).send("Error al agregar cartelera.");
+            else return res.status(200).send("Cartelera agregada con exito.");
+        }    
+    )
+});
 
 module.exports = router;
