@@ -2,15 +2,9 @@ var express = require('express')
 var router = express.Router()
 var bodyParser = require('body-parser');
 
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
-var config = require('../config');
-
 router.use(bodyParser.urlencoded({ extended: true }));
 var Bilboard = require('./Bilboard');
 const { runInNewContext } = require('vm');
-
-
 
 /////////////////////////////////////////LIST/////////////////////////////////////////
 router.get('/list', function(req, res) {

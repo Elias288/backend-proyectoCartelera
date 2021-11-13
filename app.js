@@ -21,4 +21,8 @@ app.use('/bilboards', BilboardController);
 //////////////////////////////////////////SEARCH//////////////////////////////////////////
 var Searcher = require(__root + 'Searcher');
 app.use('/search', Searcher);
+//////////////////////////////////////////INVITATION//////////////////////////////////////////
+var Searcher = require(__root + 'invitation/invitationController');
+app.use('/invitation', Searcher);
+
 module.exports = app;
