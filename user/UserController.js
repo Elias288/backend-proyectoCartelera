@@ -31,10 +31,6 @@ router.post('/new', function(req, res) {
 router.get('/me', function(req, res) {
     var token = req.headers['x-access-token'];
     if (!token) return res.status(401).send({ auth: false, message: 'Sin token' });
-    /* jwt.verify(token, config.secret, function(err, decoded) {
-    	if (err) return res.status(500).send({ auth: false, message: 'Error de autenticacion' });
-    	res.status(200).send(decoded);
-    }); */
 
     jwt.verify(token, config.secret, function(err, decoded) {
         if (err) return res.status(500).send({ auth: false, message: 'Error de autenticacion' });
@@ -46,8 +42,8 @@ router.get('/me', function(req, res) {
     });
 });
 
-/////////////////////////////////////////FIND/////////////////////////////////////////
-router.get('/', function(req, res) {
+/////////////////////////////////////////LIST/////////////////////////////////////////
+router.get('/list', function(req, res) {
     User.find({}, function(err, users) {
         if (err) return res.status(500).send("Error al encontrar usuarios.");
         res.status(200).send(users);

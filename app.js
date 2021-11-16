@@ -18,9 +18,6 @@ app.use('/users', UserController);
 //////////////////////////////////////////BILBOARD//////////////////////////////////////////
 var BilboardController = require(__root + 'bilboard/BilboardController');
 app.use('/bilboards', BilboardController);
-//////////////////////////////////////////SEARCH//////////////////////////////////////////
-var Searcher = require(__root + 'Searcher');
-app.use('/search', Searcher);
 //////////////////////////////////////////INVITATION//////////////////////////////////////////
 var Searcher = require(__root + 'invitation/invitationController');
 app.use('/invitation', Searcher);

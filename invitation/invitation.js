@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const InvitationSchema = mongoose.Schema({
-    bilboard:{
+    bilboardId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Bilboard"
     },
+    bilboardName: String,
     member:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
