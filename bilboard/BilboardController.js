@@ -21,7 +21,8 @@ router.post('/new', function(req, res) {
             authId: req.body.adminId,
             authEmail: req.body.adminEmail,
             description: req.body.description,
-            members: [req.body.adminId]
+            members: [req.body.adminId],
+            tasks: []
         },
         function(err) {
             if (err) return res.status(500).send("Error al crear la cartelera.");
@@ -57,6 +58,19 @@ router.post('/adduser', function(req, res){
         function(err){
             if(err) return res.status(500).send("Error al agregar usuario a la cartelera.");
             else return res.status(200).send("Usuario agregado con exito.");
+        }    
+    )
+});
+
+/////////////////////////////////////////ADDTASK/////////////////////////////////////////
+router.post('/addtask', function(req, res){
+    Bilboard.findByIdAndUpdate(
+        req.body.idBilboard,
+        {$push: {tasks: req.body.idTask}},
+        {new: true, useFindAndModify: false},
+        function(err){
+            if(err) return res.status(500).send("Error al agregar tarea a la cartelera.");
+            else return res.status(200).send("Tarea agregada con exito.");
         }    
     )
 });
