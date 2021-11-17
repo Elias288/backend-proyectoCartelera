@@ -18,7 +18,7 @@ router.post('/new', function(req, res) {
         },
         function(err, task) {
             if (err) return res.status(500).send("Error al crear la tarea.");
-            else return res.status(200).send("Tarea creada con éxito.");
+            else return res.status(200).send(task);
         });
 });
 
