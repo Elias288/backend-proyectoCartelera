@@ -6,6 +6,10 @@ const BilboardSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
+    tasks: [{//id de la tarea
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Task"
+    }],
     authEmail: String, 
     description: String,
     members: [

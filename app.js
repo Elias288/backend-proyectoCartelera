@@ -21,5 +21,8 @@ app.use('/bilboards', BilboardController);
 //////////////////////////////////////////INVITATION//////////////////////////////////////////
 var Searcher = require(__root + 'invitation/invitationController');
 app.use('/invitation', Searcher);
+//////////////////////////////////////////TASK//////////////////////////////////////////
+var TaskController = require(__root + 'task/TaskController');
+app.use('/tasks', TaskController);
 
 module.exports = app;
