@@ -42,13 +42,6 @@ function findInvitation(invitationId, res){
     });
 }
 
-function ChangeInvitation(InvitationId, option, res){
-    Invitation.findByIdAndUpdate(InvitationId, {aprobe: option}, function(err){
-        if(err) return res.status(500).send('Error.');
-        else return true
-    })
-}
-
 /*////////////////////////////////////////////////LIST////////////////////////////////////////////////*/
 router.get('/list', function(req,res){
     Invitation.find({}, function(err, invitation) {
@@ -56,6 +49,7 @@ router.get('/list', function(req,res){
         res.status(200).send(invitation);
     })
 });
+
 /*////////////////////////////////////////////////LISTID////////////////////////////////////////////////*/
 router.get('/my', function(req,res){
     var token = req.headers['x-access-token'];
@@ -69,6 +63,7 @@ router.get('/my', function(req,res){
         })
     });
 });
+
 /*////////////////////////////////////////////////NEW////////////////////////////////////////////////*/
 router.post('/new', async function(req, res) { //solo el auth de una bilboard puede llamar esta funcion
     //bilboardId
@@ -77,20 +72,28 @@ router.post('/new', async function(req, res) { //solo el auth de una bilboard pu
     //userId
 
     const bilboard = await findBilboard(req.body.bilboardId, res);
-    const auth = await findUser(req.body.authId, res);
 
-    if(bilboard.authId.toString()!=auth._id.toString()) return res.status(404).send('Error! Usuario no autorizado.');
+    if(!req.body.authId) return res.status(404).send('Error! Falta autor.');
+    if(bilboard.authId.toString()!= req.body.authId.toString()) //si no es el author es el que envia
+        return res.status(404).send('Error! Usuario no autorizado.');
 
-    Invitation.create({
-        bilboardId: req.body.bilboardId,
-        bilboardName: req.body.bilboardName,
-        member: req.body.userId,
-        auth: req.body.authId,
-        aprobe:false
-        },
-        function(err) {
-            if (err) return res.status(500).send("Error al enviar la invitación.");
-            else return res.status(200).send("Invitación enviada con éxito.");
+    //si no existe
+    Invitation.findOne({bilboardId: req.body.bilboardId, member:req.body.userId}, function(err, inv){
+        if (err) return res.status(500).send("Error al encontrar la invitacion.");
+        if(inv) return res.status(500).send("Error la invitacion ya existe.");
+
+        Invitation.create({
+            bilboardId: req.body.bilboardId,
+            bilboardName: req.body.bilboardName,
+            member: req.body.userId,
+            auth: req.body.authId,
+            aprobe: 0
+            },
+            function(err) {
+                if (err) return res.status(500).send("Error al enviar la invitación.");
+                res.status(200).send("Invitación enviada con éxito.");
+            }
+        );
     });
 });
 
@@ -102,23 +105,31 @@ router.post('/answer', async function(req, res){
 
     const member = await findUser(req.body.memberId, res)
     const invitation = await findInvitation(req.body.invitationId, res)
+    const bilboard = await findBilboard(invitation.bilboardId, res)
+    const memberList = bilboard.members;
 
     if(invitation.member.toString()===member._id.toString()){
-        /* return res.status(200).send(invitation.member + ' ' + member._id); */
-        if(req.body.option){ //si acepta
-            Bilboard.findByIdAndUpdate( //agrega el usuario a la cartelera
-                invitation.bilboardId,
-                {$push: {members: member._id}},
-                {new: true, useFindAndModify: false},
+        
+        //si se modifica la invitacion y la opcion es true
+        Invitation.findByIdAndUpdate(req.body.invitationId, {aprobe: req.body.option==="true"? 1 : 0}, function(err){
+            if(err) return res.status(500).send('Error al modificar invitacion.');
+        })
+
+        if(req.body.option){
+            if(memberList.find(m => m.equals(member._id))) //si el usuario ya es miembro
+                res.status(500).send("Error!! ya es miembro de esta cartelera");
+            else{   //si el usuario no es miembro
+                //agrega el usuario a la cartelera
+                Bilboard.findByIdAndUpdate(invitation.bilboardId, {$push: {members: member._id}},{new: true, useFindAndModify: false}, 
                 function(err){
                     if(err) return res.status(500).send("Error al agregar usuario a la cartelera.");
-                    else{
-                        ChangeInvitation(invitation._id, false);
-                        return res.status(200).send("Usuario agregado con exito.");
-                    } 
-                }    
-            )
+                    
+                    //actualiza la invitacion a 1:aceptado o 0:rechazado
+                    res.status(200).send("Usuario agregado con exito.");
+                })
+            }   
         }
+
     }else
         return res.status(500).send("Error Usuario incorrecto.");
 })

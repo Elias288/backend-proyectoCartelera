@@ -13,7 +13,7 @@ const InvitationSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    aprobe: false
+    aprobe: Number
 })
 mongoose.model('Invitations', InvitationSchema);
 module.exports = mongoose.model('Invitations');
