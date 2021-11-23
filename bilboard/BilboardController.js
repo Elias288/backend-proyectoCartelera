@@ -2,6 +2,9 @@ var express = require('express')
 var router = express.Router()
 var bodyParser = require('body-parser');
 
+var jwt = require('jsonwebtoken');
+var config = require('../config');
+
 router.use(bodyParser.urlencoded({ extended: true }));
 var Bilboard = require('./Bilboard');
 const { runInNewContext } = require('vm');
@@ -12,6 +15,21 @@ router.get('/list', function(req, res) {
         if (err) return res.status(500).send("Error al encontrar carteleras.");
         res.status(200).send(bilboard);
     });
+});
+
+/////////////////////////////////////////MY/////////////////////////////////////////
+router.get('/my', function(req, res) {
+    var token = req.headers['x-access-token'];
+    if (!token) return res.status(401).send({ auth: false, message: 'Sin token' });
+    jwt.verify(token, config.secret, function(err, decoded) {
+        if (err) return res.status(500).send({ auth: false, message: 'Error de autenticacion' });
+
+        Bilboard.find({ $or:[{ authId: decoded.id}, {members: {"$in" : [decoded.id]}} ] }, function(err, bilboard) {
+            if (err) return res.status(500).send("Error al encontrar carteleras.");
+            res.status(200).send(bilboard);
+        });
+    });
+        
 });
 
 /////////////////////////////////////////NEW/////////////////////////////////////////
