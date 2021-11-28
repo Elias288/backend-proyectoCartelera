@@ -50,7 +50,7 @@ router.get('/list', function(req,res){
     })
 });
 
-/*////////////////////////////////////////////////LISTID////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////LISTMEMBER////////////////////////////////////////////////*/
 router.get('/my', function(req,res){
     var token = req.headers['x-access-token'];
     if (!token) return res.status(401).send({ auth: false, message: 'Sin token' });
@@ -62,6 +62,16 @@ router.get('/my', function(req,res){
             res.status(200).send(invitation);
         })
     });
+});
+
+/*////////////////////////////////////////////////LISTBILBOARD////////////////////////////////////////////////*/
+router.get('/:bilboardId', function(req,res){
+    //req.params.bilboardId
+    Invitation.find({bilboardId: req.params.bilboardId}, function(err, invitation) {
+        if (err) return res.status(500).send("Error al encontrar las invitaciones.");
+        const memlist = invitation.map(function(i){return i.member});
+        res.status(200).send(memlist);
+    })
 });
 
 /*////////////////////////////////////////////////NEW////////////////////////////////////////////////*/
