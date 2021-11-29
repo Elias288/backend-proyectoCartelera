@@ -13,7 +13,7 @@ const { runInNewContext } = require('vm');
 router.get('/list', function(req, res) {
     Bilboard.find({}, function(err, bilboard) {
         if (err) return res.status(500).send("Error al encontrar carteleras.");
-        res.status(200).send(bilboard);
+        return res.status(200).send(bilboard);
     });
 });
 
@@ -26,7 +26,7 @@ router.get('/my', function(req, res) {
 
         Bilboard.find({ $or:[{ authId: decoded.id}, {members: {"$in" : [decoded.id]}} ] }, function(err, bilboard) {
             if (err) return res.status(500).send("Error al encontrar carteleras.");
-            res.status(200).send(bilboard);
+            return res.status(200).send(bilboard);
         });
     });
         
@@ -54,7 +54,7 @@ router.get('/:id', function(req, res) {
     Bilboard.findById(req.params.id, function(err, bilboard) {
         if (err) return res.status(500).send("Error al encontrar carteleras.");
         if (!bilboard) return res.status(404).send("No existe la cartelera.");
-        res.status(200).send(bilboard);
+        return res.status(200).send(bilboard);
     });
 });
 
@@ -78,6 +78,27 @@ router.post('/adduser', function(req, res){
             else return res.status(200).send("Usuario agregado con exito.");
         }    
     )
+});
+/////////////////////////////////////////UNSUSBSCRIBEME/////////////////////////////////////////
+router.post('/unsubscribeme', function(req, res){
+    var token = req.headers['x-access-token'];
+    if (!token) return res.status(401).send({ auth: false, message: 'Sin token' });
+
+    jwt.verify(token, config.secret, function(err, decoded) {
+        if (err) return res.status(500).send({ auth: false, message: 'Error de autenticacion' });
+
+        if(!req.body.idBilboard) return res.status(404).send("Error, falta bilboard");
+
+        Bilboard.findByIdAndUpdate(
+            req.body.idBilboard,
+            {$pull: {members: decoded.id}},
+            {new: true},
+            function(err){
+                if(err) return res.status(500).send("Error al dar de baja.");
+                return res.status(200).send("Usuario dado de baja con exito.");
+            }    
+        )
+    });
 });
 
 /////////////////////////////////////////ADDTASK/////////////////////////////////////////

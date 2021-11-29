@@ -144,6 +144,23 @@ router.post('/answer', async function(req, res){
         return res.status(500).send("Error Usuario incorrecto.");
 })
 
-/*//////////////////////////////////////////////// ////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////DELETE////////////////////////////////////////////////*/
+router.delete('/delete', function(req, res) {
+    var token = req.headers['x-access-token'];
+    if (!token) return res.status(401).send({ auth: false, message: 'Sin token' });
+
+    if(!req.body.idBilboard) return res.status(404).send("Error, falta bilboard");
+
+    jwt.verify(token, config.secret, function(err, decoded) {
+        if (err) return res.status(500).send({ auth: false, message: 'Error de autenticacion' });
+
+        //busca y borra la invitacion donde el bilboard y el usuario coincidan
+        Invitation.findByIdAndRemove({$and : [{bilboardId: req.body.idBilboard}, {member: decoded.id}] }, function(err) {
+            if (err) return res.status(500).send("Error al eliminar invitacion.");
+            return res.status(200).send("Invitacion eliminada con exito.");
+        });
+
+    });
+});
 
 module.exports = router;
