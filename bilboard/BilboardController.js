@@ -93,4 +93,17 @@ router.post('/addtask', function(req, res){
     )
 });
 
+/////////////////////////////////////////DELETETASK/////////////////////////////////////////
+router.post('/deletetask', function(req, res){
+    Bilboard.findByIdAndUpdate(
+        req.body.idBilboard,
+        {$pull: {tasks: req.body.idTask}},
+        {useFindAndModify: true},
+        function(err){
+            if(err) return res.status(500).send("Error al completar tarea.");
+            else return res.status(200).send("Tarea completada con exito.");
+        }    
+    )
+});
+
 module.exports = router;
