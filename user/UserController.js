@@ -8,6 +8,7 @@ var config = require('../config');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 var User = require('./User');
+var invitation = require('../invitation/invitation');
 const { runInNewContext } = require('vm');
 
 /////////////////////////////////////////NEW/////////////////////////////////////////
@@ -55,7 +56,7 @@ router.post('/login', function(req, res) {
     User.findOne({ email: req.body.email }, function(err, user) {
         if (err) return res.status(500).send('Error.');
         if (!user) return res.status(404).send('No existe usuario.');
-        if(!req.body.password) return res.status(404).send('No se ingreso una contraseña');
+        if(!req.body.password) return res.status(401).send('No se ingreso una contraseña');
 
         var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) return res.status(401).send('Contraseña incorrecta');
