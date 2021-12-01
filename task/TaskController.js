@@ -46,10 +46,10 @@ router.post('/modify', function(req, res) {
         });
 });
 /////////////////////////////////////////DELETE/////////////////////////////////////////
-router.delete('/:id', function(req, res) {
-    Task.findByIdAndRemove(req.params.id, function(err, task) {
-        if (err) return res.status(500).send("Error al eliminar tarea.");
-        res.status(200).send("Tarea " + task.titulo + " eliminada.");
+router.delete('/delete', function(req, res) {
+    Task.findByIdAndRemove(req.body.idTask, function(err, task) {
+        if (err) return res.status(500).send("Error al completar tarea.");
+        res.status(200).send("Tarea " + task.titulo + " completada.");
     });
 });
 
