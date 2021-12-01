@@ -34,6 +34,10 @@ router.get('/my', function(req, res) {
 
 /////////////////////////////////////////NEW/////////////////////////////////////////
 router.post('/new', function(req, res) {
+    if(!req.body.projectName) return res.status(401).send("Error, falta un nombre");
+    if(!req.body.adminId) return res.status(401).send("Error, falta el id de administrador");
+    if(!req.body.description) return res.status(401).send("Error, falta una descripción");
+
     Bilboard.create({
             projectName: req.body.projectName,
             authId: req.body.adminId,

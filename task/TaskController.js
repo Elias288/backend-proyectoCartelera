@@ -12,6 +12,9 @@ const { runInNewContext } = require('vm');
 
 /////////////////////////////////////////NEW/////////////////////////////////////////
 router.post('/new', function(req, res) {
+    if(!req.body.titulo) return res.status(401).send("Error, falta un titulo");
+    if(!req.body.descripcion) return res.status(401).send("Error, falta una descripcion");
+
     Task.create({
             titulo: req.body.titulo,
             descripcion: req.body.descripcion

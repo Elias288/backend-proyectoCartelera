@@ -14,6 +14,11 @@ const { runInNewContext } = require('vm');
 /////////////////////////////////////////NEW/////////////////////////////////////////
 router.post('/new', function(req, res) {
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+    
+    if(!req.body.name) return res.status(401).send('Error, No se ingreso un nombre');
+    if(!req.body.email) return res.status(401).send('Error, No se ingreso un correo');
+    if(!req.body.password) return res.status(401).send('No se ingreso una contraseña');
+
     User.create({
             name: req.body.name,
             email: req.body.email,
@@ -24,7 +29,7 @@ router.post('/new', function(req, res) {
             var token = jwt.sign({ id: user._id }, config.secret, {
                 expiresIn: 86400 // expira en 24 horas
             });
-            res.status(200).send({ auth: true, token: token });
+            res.status(200).send({ msg: 'Usuario registrado correctamente', auth: true, token: token });
         });
 });
 
